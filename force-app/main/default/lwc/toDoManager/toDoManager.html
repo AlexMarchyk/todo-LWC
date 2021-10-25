@@ -23,7 +23,14 @@
 
         <lightning-layout-item size="12">
             <div>Upcoming</div>
-            <template for:each={todos} for:item="todo"></template>
+            <template for:each={upcomingTasks} for:item="todo">
+                    <c-to-do-item key={todo.todoId} todo-id={todo.todoId} todo-name={todo.todoName}></c-to-do-item>    
+            </template>
+
+            <div>COMPLITED</div>
+            <template for:each={complitedTasks} for:item="todo">
+                <c-to-do-item key={todo.todoId} todo-id={todo.todoId} todo-name={todo.todoName} done></c-to-do-item> 
+            </template>
         </lightning-layout-item>
 
     </lightning-layout>

@@ -1,4 +1,5 @@
 import { LightningElement, track } from 'lwc';
+import addTodo from '@salesforce/apex/ToDoController.addTodo';
 
 export default class ToDoManager extends LightningElement {
    @track time="8:15 PM";
@@ -8,6 +9,7 @@ export default class ToDoManager extends LightningElement {
     
     connectedCallback(){
         this.getTime();
+        this.populateTodos()
 
         setInterval(()=>{
             this.getTime();
@@ -50,9 +52,55 @@ export default class ToDoManager extends LightningElement {
  
     addTodoHandler(){
         const inputBox = this.template.querySelector("lightning-input");
-        console.log("current value" , inputBox.value);
-        this.todos.push(inputBox.value);
+        
+        const todo ={
+            todoName: inputBox.value,
+            done: false
+            
+        }
+        
+        addTodo({payload:JSON.stringify(todo)}).then(response => {
+            console.log('Item inserted ');
+        }).catch(error =>{
+            console.error('Error in inserting todo item ' + error)
+        });
+        // this.todos.push(todo);
         inputBox.value ="";
+
+        
     }
+    get upcomingTasks() {
+        return this.todos && this.todos.length ? this.todos.filter(todo=> !todo.done) : [];
+    }
+    get complitedTasks() {
+        return this.todos && this.todos.length ? this.todos.filter(todo=> todo.done) : [];
+    }
+
+    populateTodos(){
+        const todos =[
+            {
+                todoId:0,
+                todoName:"Feed the dog",
+                done: false,
+                todoDate:new Date()
+            },
+
+            {
+                todoId:1,
+                todoName:"Wash the car",
+                done: false,
+                todoDate:new Date()
+            },
+            {
+                todoId:2,
+                todoName:"Send email to manager",
+                done: true,
+                todoDate:new Date()
+            }
+
+        ];
+        this.todos= todos;
+    }
+
 }
 
